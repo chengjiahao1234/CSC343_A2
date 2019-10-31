@@ -1,8 +1,8 @@
--- Rest bylaw
+-- Bigger and smaller spenders.
 
 -- You must not change the next 2 lines or the table definition.
 SET SEARCH_PATH TO uber, public;
-drop table if exists q3 cascade;
+drop table if exists q5 cascade;
 
 create table q3(
     driver INTEGER,
@@ -64,4 +64,3 @@ and B1.day + 1 = B2.day and B2.day + 1 = B3.day and B1.day + 2 = B3.day;
 -- Your query that answers the question goes below the "insert into" line:
 insert into q3
 (select * from answer);
-

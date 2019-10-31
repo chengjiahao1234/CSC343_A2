@@ -13,17 +13,17 @@ create table q1(
 -- Do this for each of the views that define your intermediate steps.  
 -- (But give them better names!) The IF EXISTS avoids generating an error 
 -- the first time this file is imported.
-DROP VIEW IF EXISTS intermediate_step CASCADE;
-
+DROP VIEW IF EXISTS allRides CASCADE;
 
 -- Define views for your intermediate steps here:
 CREATE VIEW allRides AS
-SELECT client_id, email, (date_part('year', Dropoff.datetime), date_part('month', Dropoff.datetime)) AS month
-FROM Client JOIN Request JOIN Dropoff ON Client.client_id = Request.client_id AND Request.request_id = Dropoff.request_id;
+SELECT Client.client_id, email, to_char(Dropoff.datetime, 'YYYY:MM') as month
+FROM Client LEFT JOIN Request ON Client.client_id = Request.client_id 
+LEFT JOIN Dropoff ON Request.request_id = Dropoff.request_id;
 
 -- Your query that answers the question goes below the "insert into" line:
 insert into q1
-(select client_id, email, count(distinct month)
+(select client_id, email, count(distinct month) as months
 from allRides
-group by client_id);
+group by client_id, email);
 
