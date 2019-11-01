@@ -6,7 +6,8 @@ insert into client values
 
 insert into driver values
 (12345, 'Snow', 'Jon', 'January 1, 1990', 'The Wall', 'BGSW 420', false),
-(22222, 'Tyrion', 'Lannister', 'January 1, 1990', 'Kings Landing', 'ABCD 123', false);
+(22222, 'Tyrion', 'Lannister', 'January 1, 1990', 'Kings Landing', 'ABCD 123', false),
+(11111, 'Jiahao', 'Cheng', 'January 1, 1998', 'U of T', 'TEST 000', false);
 
 
 insert into available values
@@ -43,7 +44,8 @@ insert into request values
 (13, 100, '2015-07-01 13:00', 'cn tower', 'pearson international airport'),
 (14, 100, '2015-07-02 13:00', 'cn tower', 'pearson international airport'),
 (15, 100, '2015-07-03 13:00', 'cn tower', 'pearson international airport'),
-(16, 100, '2015-07-04 13:00', 'cn tower', 'pearson international airport');
+(16, 100, '2015-07-04 13:00', 'cn tower', 'pearson international airport'),
+(17, 100, '2015-07-04 13:00', 'cn tower', 'pearson international airport');
 
 
 insert into dispatch values
@@ -62,7 +64,8 @@ insert into dispatch values
 (13, 22222, '(5, 5)', '2015-07-01 13:05'),
 (14, 22222, '(5, 5)', '2015-07-02 13:05'),
 (15, 22222, '(5, 5)', '2015-07-03 13:05'),
-(16, 22222, '(5, 5)', '2015-07-04 13:05');
+(16, 22222, '(5, 5)', '2015-07-04 13:05'),
+(17, 12345, '(5, 5)', '2015-07-04 13:05');
 
 
 insert into pickup values
@@ -81,7 +84,8 @@ insert into pickup values
 (13, '2015-07-01 13:06'),
 (14, '2015-07-02 13:06'),
 (15, '2015-07-03 13:06'),
-(16, '2015-07-04 13:06');
+(16, '2015-07-04 13:06'),
+(17, '2015-07-04 13:06');
 
 
 insert into dropoff values
@@ -100,7 +104,8 @@ insert into dropoff values
 (13, '2015-07-01 13:16'),
 (14, '2015-07-02 13:06'),
 (15, '2015-07-03 13:06'),
-(16, '2015-07-04 13:06');
+(16, '2015-07-04 13:06'),
+(17, '2015-07-04 13:06');
 
 
 insert into rates values
@@ -123,11 +128,22 @@ insert into billed values
 (13, 5.7),
 (14, 5.7),
 (15, 5.7),
-(16, 5.7);
+(16, 5.7),
+(17, 9.9);
 
 
 insert into driverrating values
-(1, 5);
+(1, 5),
+(2, 1),
+(3, 3),
+(4, 5),
+(5, 5),
+(6, 4),
+(7, 3),
+(8, 2),
+(9, 1),
+(10, 5);
+
 
 insert into clientrating values
 (1, 4);
