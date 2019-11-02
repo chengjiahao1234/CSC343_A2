@@ -7,8 +7,8 @@ drop table if exists q3 cascade;
 create table q3(
     driver INTEGER,
     start timestamp,
-    driving timestamp,
-    breaks timestamp
+    driving interval,
+    breaks interval
 );
 
 -- Do this for each of the views that define your intermediate steps.  
@@ -84,5 +84,6 @@ where B1.driver = B2.driver and B2.driver = B3.driver
 
 -- Your query that answers the question goes below the "insert into" line:
 insert into q3
-(select * from answer);
+(select * from answer
+order by driver, start);
 

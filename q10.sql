@@ -39,11 +39,11 @@ select Dispatch.driver_id as driver_id, to_char(Request.datetime, 'MM') as month
 --case when to_char(Request.datetime, 'YYYY') = '2015' then destination else null end as destination_2015,
     case when to_char(Request.datetime, 'YYYY') = '2014' 
         then amount 
-        else null 
+        else 0
     end as bill_2014,
     case when to_char(Request.datetime, 'YYYY') = '2015' 
         then amount 
-        else null 
+        else 0
     end as bill_2015
 from Dispatch join Request on Dispatch.request_id = Request.request_id
     join Dropoff on Request.request_id = Dropoff.request_id
@@ -96,4 +96,5 @@ union
 
 -- Your query that answers the question goes below the "insert into" line:
 insert into q10
-(select * from answer);
+(select * from answer
+order by driver_id, month);

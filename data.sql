@@ -1,7 +1,8 @@
 insert into client values
 (99, 'Mason', 'Daisy', 'daisy@kitchen.com'),
 (100, 'Crawley', 'Violet', 'dowager@dower-house.org'),
-(88, 'Branson', 'Tom', 'branson@gmail.com');
+(88, 'Branson', 'Tom', 'branson@gmail.com'),
+(1, 'Jiahao', 'Cheng', null);
 
 
 insert into driver values
@@ -46,7 +47,8 @@ insert into request values
 (14, 100, '2015-07-02 11:00', 'cn tower', 'pearson international airport'),
 (15, 100, '2015-07-03 11:00', 'cn tower', 'pearson international airport'),
 (16, 100, '2015-07-04 11:00', 'cn tower', 'pearson international airport'),
-(17, 100, '2015-07-04 11:00', 'cn tower', 'pearson international airport');
+(17, 100, '2015-07-04 11:00', 'cn tower', 'pearson international airport'),
+(19, 1, '2015-02-01 11:00', 'cn tower', 'pearson international airport');
 
 
 insert into dispatch values
@@ -67,7 +69,8 @@ insert into dispatch values
 (14, 22222, '(5, 5)', '2015-07-02 11:05'),
 (15, 22222, '(5, 5)', '2015-07-03 11:05'),
 (16, 22222, '(5, 5)', '2015-07-04 11:05'),
-(17, 12345, '(5, 5)', '2015-07-04 11:05');
+(17, 12345, '(5, 5)', '2015-07-04 11:05'),
+(19, 12345, '(5, 5)', '2015-02-01 11:05');
 
 
 insert into pickup values
@@ -88,7 +91,8 @@ insert into pickup values
 (14, '2015-07-02 11:06'),
 (15, '2015-07-03 11:06'),
 (16, '2015-07-04 11:06'),
-(17, '2015-07-04 11:06');
+(17, '2015-07-04 11:06'),
+(19, '2015-02-01 11:06');
 
 
 insert into dropoff values
@@ -109,7 +113,8 @@ insert into dropoff values
 (14, '2015-07-02 23:06'),
 (15, '2015-07-03 23:06'),
 (16, '2015-07-04 23:06'),
-(17, '2015-07-04 23:06');
+(17, '2015-07-04 23:06'),
+(19, '2015-02-01 12:06');
 
 
 insert into rates values
@@ -133,7 +138,8 @@ insert into billed values
 (14, 205.7),
 (15, 305.7),
 (16, 85.7),
-(17, 9.9);
+(17, 9.9),
+(19, 35.4);
 
 
 insert into driverrating values
@@ -146,9 +152,11 @@ insert into driverrating values
 (7, 3),
 (8, 2),
 (9, 1),
-(10, 5);
+(10, 5),
+(19, 5);
 
 
 insert into clientrating values
-(1, 4);
+(1, 4),
+(19, 5);
 

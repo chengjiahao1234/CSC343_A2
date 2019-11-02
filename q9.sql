@@ -31,4 +31,5 @@ where numRides = numRatings;
 
 -- Your query that answers the question goes below the "insert into" line:
 insert into q9
-(select * from answer);
+(select * from answer
+order by client_id);

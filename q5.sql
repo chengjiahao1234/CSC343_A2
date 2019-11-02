@@ -49,4 +49,5 @@ from allClientBill join averageAmount
 
 -- Your query that answers the question goes below the "insert into" line:
 insert into q5
-(select * from answer);
+(select * from answer
+order by client_id, month);
