@@ -20,7 +20,10 @@ create table q10(
 -- the first time this file is imported.
 DROP VIEW IF EXISTS allRides CASCADE;
 --DROP VIEW IF EXISTS allRidesDistance CASCADE;
-DROP TABLE IF EXISTS allMonth CASCADE;
+--DROP TABLE IF EXISTS allMonth CASCADE;
+DROP VIEW IF EXISTS allMonth CASCADE;
+DROP VIEW IF EXISTS solutionOne CASCADE;
+DROP VIEW IF EXISTS solutionTwo CASCADE;
 DROP VIEW IF EXISTS answer CASCADE;
 
 -- Define views for your intermediate steps here:
@@ -62,10 +65,13 @@ where to_char(Request.datetime, 'YYYY') = '2014' or
 --join Place p4 on destination_2015 = p4.name;
 
 
-CREATE TABLE allMonth(month char(2));
-INSERT INTO allMonth VALUES 
-    ('01'), ('02'), ('03'), ('04'), ('05'), ('06'), 
-    ('07'), ('08'), ('09'), ('10'), ('11'), ('12');
+--CREATE TABLE allMonth(month char(2));
+--INSERT INTO allMonth VALUES 
+--    ('01'), ('02'), ('03'), ('04'), ('05'), ('06'), 
+--    ('07'), ('08'), ('09'), ('10'), ('11'), ('12');
+
+CREATE VIEW allMonth as
+select to_char(DATE '2014-01-01' + (interval '1' month * generate_series(0, 11)), 'MM') as month;
 
 
 CREATE VIEW solutionOne AS
@@ -87,6 +93,11 @@ select driver_id, month, sum(distance_2014) as mileage_2014,
     sum(distance_2015) - sum(distance_2014) as mileage_increase
 from allRides
 group by driver_id, month;
+
+--CREATE VIEW q11 AS
+--select d.request_id, d.driver_id, r.client_id
+--from Dispatch d join Request r on d.request_id = r.request_id 
+--where not exists (select p.request_id from Pickup p where d.request_id = p.request_id);
 
 
 CREATE VIEW answer AS

@@ -30,7 +30,17 @@ public class Assignment2 {
    */
    public boolean connectDB(String URL, String username, String password) {
       // Implement this method!
-      return false;
+      try {
+      	 connection = DriverManager.getConnection(URL, username, password);
+		 PreparedStatement init;
+		 init = connection.prepareStatement("SET SEARCH_PATH TO uber, public");
+		 init.execute();
+      } catch(SQLException se){
+      	System.err.println("SQL Exception." +
+                        "<Message>: " + se.getMessage());
+         return false;
+      }
+      return true;
    }
 
   /**
@@ -40,7 +50,14 @@ public class Assignment2 {
    */
    public boolean disconnectDB() {
       // Implement this method!
-      return false;
+      try {
+		 connection.close();
+      } catch(SQLException se){
+      	System.err.println("SQL Exception." +
+                        "<Message>: " + se.getMessage());
+         return false;
+      }
+      return true;
    }
    
    /* ======================= Driver-related methods ======================= */
@@ -59,7 +76,18 @@ public class Assignment2 {
     */
    public boolean available(int driverID, Timestamp when, PGpoint location) {
       // Implement this method!
-      return false;
+      try {
+		 PreparedStatement execAdd = connection.prepareStatement("INSERT INTO Available VALUES (?, ?, ?)");
+		 execAdd.setInt(1, driverID);
+		 execAdd.setTimestamp(2, when);
+		 execAdd.setObject(3, location);
+		 execAdd.executeUpdate();
+      } catch(SQLException se){
+      	System.err.println("SQL Exception." +
+                        "<Message>: " + se.getMessage());
+         return false;
+      }
+      return true;
    }
 
    /**
@@ -76,7 +104,54 @@ public class Assignment2 {
     */
    public boolean picked_up(int driverID, int clientID, Timestamp when) {
       // Implement this method!
-      return false;
+      try {
+		  PreparedStatement execPick;
+		  ResultSet rs;
+		  String queryString;
+		  execPick = connection.prepareStatement("select Dispatch.request_id, "
+		  + "Dispatch.driver_id, Request.client_id from Dispatch, "
+		  + "Request where Dispatch.request_id = Request.request_id "
+		  + "and not exists (select p.request_id from Pickup p "
+		  + "where Dispatch.request_id = p.request_id)");
+		  // execPick.setString(1, String.valueOf(driverID));
+		  rs = execPick.executeQuery();
+		  while(rs.next()){
+		  	int request = rs.getInt("request_id");
+		  	int driver = rs.getInt("driver_id");
+		  	int client = rs.getInt("client_id");
+		  	if(driverID == driver){
+		  		execPick = connection.prepareStatement("INSERT INTO uber.Pickup VALUES (?, ?)");
+		  		execPick.setInt(1, request);
+		  		execPick.setTimestamp(2, when);
+		  		execPick.executeUpdate();
+		  	}
+		  }
+      } catch(SQLException se){
+      	System.err.println("SQL Exception." +
+                        "<Message>: " + se.getMessage());
+      	return false;
+      }
+      return true; 
+   }
+   
+   public void printResult(){
+	   try{
+	       String queryString = "select * from available";
+          PreparedStatement ps = connection.prepareStatement(queryString);
+
+		    ResultSet rs = ps.executeQuery();
+
+		    // Iterate through the result set and report on each tuple.
+		    while (rs.next()) {
+		        int id = rs.getInt("driver_id");
+		        Timestamp when = (Timestamp)(rs.getObject("datetime"));
+		        PGpoint p = (PGpoint)(rs.getObject("location"));
+		        System.out.println(" result: " + id + "  " + when + p);
+		    }
+	   } catch(SQLException se){
+	   		System.err.println("SQL Exception." +
+                        "<Message>: " + se.getMessage());
+	   }
    }
    
    /* ===================== Dispatcher-related methods ===================== */
@@ -117,7 +192,20 @@ public class Assignment2 {
 
    public static void main(String[] args) {
       // You can put testing code in here. It will not affect our autotester.
-      System.out.println("Boo!");
+      try{
+		  Assignment2 a2 = new Assignment2();
+		  String url = "jdbc:postgresql://localhost:5432/csc343h-chengj60";
+		  String user = "chengj60";
+		  System.out.println("connection succeed: " + a2.connectDB(url, user, ""));
+		  Timestamp t = new Timestamp(System.currentTimeMillis());;
+		  PGpoint p1 = new PGpoint(3, 4);
+		  System.out.println("available pass: " + a2.available(12345, t, p1));
+		  System.out.println("pickup pass: " + a2.picked_up(12345, 1, t));
+		  a2.printResult();
+		  a2.disconnectDB();
+	  } catch (Exception e){
+	  	System.out.println("Boo!");
+	  }
    }
 
 }

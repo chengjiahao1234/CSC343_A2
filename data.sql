@@ -48,7 +48,8 @@ insert into request values
 (15, 100, '2015-07-03 11:00', 'cn tower', 'pearson international airport'),
 (16, 100, '2015-07-04 11:00', 'cn tower', 'pearson international airport'),
 (17, 100, '2015-07-04 11:00', 'cn tower', 'pearson international airport'),
-(19, 1, '2015-02-01 11:00', 'cn tower', 'pearson international airport');
+(19, 1, '2015-02-01 11:00', 'cn tower', 'pearson international airport'),
+(20, 1, '2015-02-02 11:00', 'cn tower', 'pearson international airport');
 
 
 insert into dispatch values
@@ -70,7 +71,8 @@ insert into dispatch values
 (15, 22222, '(5, 5)', '2015-07-03 11:05'),
 (16, 22222, '(5, 5)', '2015-07-04 11:05'),
 (17, 12345, '(5, 5)', '2015-07-04 11:05'),
-(19, 12345, '(5, 5)', '2015-02-01 11:05');
+(19, 12345, '(5, 5)', '2015-02-01 11:05'),
+(20, 12345, '(5, 5)', '2015-02-02 11:05');
 
 
 insert into pickup values
