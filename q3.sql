@@ -51,7 +51,7 @@ group by driver, day
 having date_part('minute', sum(pickupTime - dropoffTime)) + 60 * date_part('hour', sum(pickupTime - dropoffTime)) <= 15;
 
 CREATE VIEW oneRideBreak AS
-select driver, day, '00:00:00' as breaks
+select driver, day, INTERVAL '00:00:00' as breaks
 from duration
 where not exists
 (select driver, day
