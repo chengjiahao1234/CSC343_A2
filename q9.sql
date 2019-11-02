@@ -18,9 +18,9 @@ DROP VIEW IF EXISTS answer CASCADE;
 -- Define views for your intermediate steps here:
 CREATE VIEW allRides AS
 select Request.client_id as client_id, count(Request.request_id) as numRides,
-count(DriverRating.request_id) as numRatings
+    count(DriverRating.request_id) as numRatings
 from Request join Dropoff on Request.request_id = Dropoff.request_id
-left join DriverRating on Dropoff.request_id = DriverRating.request_id
+    left join DriverRating on Dropoff.request_id = DriverRating.request_id
 group by Request.client_id;
 
 
