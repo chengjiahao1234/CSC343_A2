@@ -21,7 +21,9 @@ DROP VIEW IF EXISTS answer CASCADE;
 
 -- Define views for your intermediate steps here:
 CREATE VIEW allBill AS
-select Request.client_id as client_id, to_char(Request.datetime, 'YYYY MM') as month, sum(Billed.amount) as amount
+select Request.client_id as client_id, 
+    to_char(Request.datetime, 'YYYY MM') as month, 
+    sum(Billed.amount) as amount
 from Billed join Request on Request.request_id = Billed.request_id
 group by Request.client_id, to_char(Request.datetime, 'YYYY MM');
 
@@ -32,19 +34,18 @@ group by month;
 
 CREATE VIEW allClientBill AS
 select Client.client_id as client_id, month, 
-case when Client.client_id = allBill.client_id then amount
-else 0
-end
-as total
+    case when Client.client_id = allBill.client_id then amount
+        else 0
+    end as total
 from Client, allBill;
 
 CREATE VIEW answer AS
 select client_id, allClientBill.month, total, 
-case when total >= average then 'at or above'
-else 'below'
-end
-as comparison
-from allClientBill join averageAmount on allClientBill.month = averageAmount.month;
+    case when total >= average then 'at or above'
+        else 'below'
+    end as comparison
+from allClientBill join averageAmount 
+    on allClientBill.month = averageAmount.month;
 
 -- Your query that answers the question goes below the "insert into" line:
 insert into q5
