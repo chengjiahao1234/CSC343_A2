@@ -17,6 +17,8 @@ create table q3(
 DROP VIEW IF EXISTS allRides CASCADE;
 DROP VIEW IF EXISTS duration CASCADE;
 DROP VIEW IF EXISTS pickupAfterDrop CASCADE;
+DROP VIEW IF EXISTS multiRidesBreak CASCADE;
+DROP VIEW IF EXISTS oneRideBreak CASCADE;
 DROP VIEW IF EXISTS break CASCADE;
 DROP VIEW IF EXISTS brokePerDay CASCADE;
 DROP VIEW IF EXISTS answer CASCADE;
@@ -34,7 +36,7 @@ CREATE VIEW duration AS
 select driver, day, sum(dropoffTime - pickupTime) as driving
 from allRides
 group by driver, day
-;--having date_part('hour', sum(dropoffTime - pickupTime)) >= 12;
+having date_part('hour', sum(dropoffTime - pickupTime)) >= 12;
 
 CREATE VIEW pickupAfterDrop AS
 select A1.driver as driver, A2.pickupTime as pickupTime, max(A1.dropoffTime) as dropoffTime, A1.day as day
@@ -42,11 +44,24 @@ from allRides A1 join allRides A2 on A1.driver = A2.driver
 where A1.day = A2.day and A1.dropoffTime <= A2.pickupTime
 group by A1.driver, A1.day, A2.pickupTime;
 
-CREATE VIEW break AS
+CREATE VIEW multiRidesBreak AS
 select driver, day, sum(pickupTime - dropoffTime) as breaks
 from pickupAfterDrop
 group by driver, day
-;--having date_part('minute', sum(pickupTime - dropoffTime)) + 60 * date_part('hour', sum(pickupTime - dropoffTime)) <= 15;
+having date_part('minute', sum(pickupTime - dropoffTime)) + 60 * date_part('hour', sum(pickupTime - dropoffTime)) <= 15;
+
+CREATE VIEW oneRideBreak AS
+select driver, day, '00:00:00' as breaks
+from duration
+where not exists
+(select driver, day
+from multiRidesBreak b
+where duration.driver = b.driver and duration.day = b.day);
+
+CREATE VIEW break AS
+(select * from multiRidesBreak)
+union
+(select * from oneRideBreak);
 
 CREATE VIEW brokePerDay AS
 select duration.driver as driver, duration.day as day, duration.driving as driving, break.breaks as breaks
