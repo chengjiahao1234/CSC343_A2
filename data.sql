@@ -12,7 +12,9 @@ insert into driver values
 
 
 insert into available values
-(12345, '2016-01-08 04:05', '(1, 2)');
+(12345, '2016-01-08 04:05', '(1, 2)'),
+(12345, '2016-01-08 05:05', '(1, 2)'),
+(22222, '2016-01-08 05:05', '(100, 100)');
 
 
 -- Locations are specified as longitude and latitude (in that order), in degrees.
@@ -49,7 +51,10 @@ insert into request values
 (16, 100, '2015-07-04 11:00', 'cn tower', 'pearson international airport'),
 (17, 100, '2015-07-04 11:00', 'cn tower', 'pearson international airport'),
 (19, 1, '2015-02-01 11:00', 'cn tower', 'pearson international airport'),
-(20, 1, '2015-02-02 11:00', 'cn tower', 'pearson international airport');
+(20, 1, '2015-02-02 11:00', 'cn tower', 'pearson international airport'),
+(21, 99, '2015-02-02 11:00', 'cn tower', 'pearson international airport'),
+(22, 100, '2015-02-02 11:00', 'cn tower', 'pearson international airport'),
+(23, 88, '2015-02-02 11:00', 'cn tower', 'pearson international airport');
 
 
 insert into dispatch values

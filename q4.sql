@@ -18,9 +18,10 @@ DROP VIEW IF EXISTS atLeast10Days CASCADE;
 DROP VIEW IF EXISTS avgOfFirst5Days CASCADE;
 DROP VIEW IF EXISTS avgOfAfter5Days CASCADE;
 DROP VIEW IF EXISTS earlyAndLate CASCADE;
-Drop view if exists finalResult cascade;
-drop view if exists train cascade;
-Drop table if exists train cascade;
+DROP VIEW IF EXISTS trained CASCADE;
+DROP VIEW IF EXISTS untrained CASCADE;
+DROP VIEW IF EXISTS train CASCADE;
+DROP VIEW IF EXISTS finalResult CASCADE;
 -- Define views for your intermediate steps here:
 create view atLeast10Days as 
 	select Driver.driver_id, trained, min(Pickup.datetime) as firstDay
@@ -58,8 +59,19 @@ create view earlyAndLate as
 	from avgOfFirst5Days full join avgOfAfter5Days 
 		on avgOfAfter5Days.driver_id = avgOfFirst5Days.driver_id;
 
-create table train(type varchar(10));
-insert into train values ('trained'), ('untrained');
+--create table train(type varchar(10));
+--insert into train values ('trained'), ('untrained');
+
+create view trained as
+select 'trained' as type;
+
+create view untrained as
+select 'untrained' as type;
+
+create view train as
+(select * from trained)
+union
+(select * from untrained);
 
 create view finalResult as
 	select case when trained then 'trained' else 'untrained' end as type, 
