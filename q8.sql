@@ -20,14 +20,17 @@ DROP VIEW IF EXISTS finalResult CASCADE;
 -- Define views for your intermediate steps here:
 create view hasReciprocals as
 	select Request.client_id, Request.request_id
-	from Request join DriverRating on Request.request_id = DriverRating.request_id
+	from Request join DriverRating 
+		on Request.request_id = DriverRating.request_id
 		join ClientRating on Request.request_id = ClientRating.request_id;
 
 create view finalResult as
 	select hasReciprocals.client_id, count(hasReciprocals.request_id), 
 		avg(DriverRating.rating) - avg(ClientRating.rating) as difference
-	from hasReciprocals join DriverRating on hasReciprocals.request_id = DriverRating.request_id
-		join ClientRating on hasReciprocals.request_id = ClientRating.request_id
+	from hasReciprocals join DriverRating 
+		on hasReciprocals.request_id = DriverRating.request_id
+		join ClientRating 
+		on hasReciprocals.request_id = ClientRating.request_id
 	group by hasReciprocals.client_id;
 
 

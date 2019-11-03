@@ -21,7 +21,8 @@ DROP VIEW IF EXISTS In2015 CASCADE;
 DROP VIEW IF EXISTS FewerThan2014 CASCADE;
 -- Define views for your intermediate steps here:
 create view moreThan500Before as 
-	select Client.client_id, concat(firstname, ' ', surname) as name, email, sum(amount) as billed
+	select Client.client_id, concat(firstname, ' ', surname) as name, 
+		email, sum(amount) as billed
 	from Client 
 		join Request on Client.client_id = Request.client_id 
 		join Billed on Request.request_id = Billed.request_id
@@ -47,11 +48,13 @@ create view In2015 as
 	group by Client.client_id;
 
 create view FewerThan2014 as
-	select aFewIn2014.client_id, aFewIn2014.num_rides - In2015.num_rides as decline
+	select aFewIn2014.client_id, 
+		aFewIn2014.num_rides - In2015.num_rides as decline
 	from aFewIn2014 join In2015 on aFewIn2014.client_id = In2015.client_id
 	where aFewIn2014.num_rides > In2015.num_rides;
 
 -- Your query that answers the question goes below the "insert into" line:
 insert into q2
 	(select moreThan500Before.client_id, name, email, billed, decline
-		from moreThan500Before join FewerThan2014 on moreThan500Before.client_id = FewerThan2014.client_id);
+		from moreThan500Before join FewerThan2014 
+			on moreThan500Before.client_id = FewerThan2014.client_id);
