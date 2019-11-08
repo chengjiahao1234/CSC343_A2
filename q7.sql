@@ -1,16 +1,16 @@
---Ratings histogram.
+-- Ratings histogram
 
 -- You must not change the next 2 lines or the table definition.
 SET SEARCH_PATH TO uber, public;
 drop table if exists q7 cascade;
 
 create table q7(
-    driver_id INTEGER,
-    r5 INTEGER,
-    r4 INTEGER,
-    r3 INTEGER,
-    r2 INTEGER,
-    r1 INTEGER
+	driver_id INTEGER,
+	r5 INTEGER,
+	r4 INTEGER,
+	r3 INTEGER,
+	r2 INTEGER,
+	r1 INTEGER
 );
 
 -- Do this for each of the views that define your intermediate steps.  

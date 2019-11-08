@@ -1,14 +1,14 @@
--- Rest bylaw
+-- Rest by-law
 
 -- You must not change the next 2 lines or the table definition.
 SET SEARCH_PATH TO uber, public;
 drop table if exists q3 cascade;
 
 create table q3(
-    driver INTEGER,
-    start timestamp,
-    driving interval,
-    breaks interval
+    driver_id INTEGER,
+    start DATE,
+    driving INTERVAL,
+    breaks INTERVAL
 );
 
 -- Do this for each of the views that define your intermediate steps.  

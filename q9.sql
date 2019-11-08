@@ -1,12 +1,12 @@
---Consistent raters.
+-- Consistent raters
 
 -- You must not change the next 2 lines or the table definition.
 SET SEARCH_PATH TO uber, public;
 drop table if exists q9 cascade;
 
 create table q9(
-    client_id INTEGER,
-    email VARCHAR(30)
+	client_id INTEGER,
+	email VARCHAR(30)
 );
 
 -- Do this for each of the views that define your intermediate steps.  
