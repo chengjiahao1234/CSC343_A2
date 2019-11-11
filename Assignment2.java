@@ -36,10 +36,8 @@ public class Assignment2 {
 		 init = connection.prepareStatement("SET SEARCH_PATH TO uber, public");
 		 init.execute();
       } catch(SQLException se){
-      	System.err.println("SQL Exception." +
-                        "<Message>: " + se.getMessage());
          return false;
-      }
+	  }
       return true;
    }
 
@@ -53,8 +51,6 @@ public class Assignment2 {
       try {
 		 connection.close();
       } catch(SQLException se){
-      	System.err.println("SQL Exception." +
-                        "<Message>: " + se.getMessage());
          return false;
       }
       return true;
@@ -83,8 +79,6 @@ public class Assignment2 {
 		 execAdd.setObject(3, location);
 		 execAdd.executeUpdate();
       } catch(SQLException se){
-      	System.err.println("SQL Exception." +
-                        "<Message>: " + se.getMessage());
          return false;
       }
       return true;
@@ -127,77 +121,9 @@ public class Assignment2 {
 		  	}
 		  }
       } catch(SQLException se){
-      	System.err.println("SQL Exception." +
-                        "<Message>: " + se.getMessage());
-      	return false;
+          return false;
       }
       return true; 
-   }
-   
-   public void printResult(){
-	   try{
-	       String queryString = "select * from available";
-          PreparedStatement ps = connection.prepareStatement(queryString);
-
-		    ResultSet rs = ps.executeQuery();
-
-		    // Table available
-		    System.out.println("available table:");
-		    System.out.println();
-		    while (rs.next()) {
-		        int id = rs.getInt("driver_id");
-		        Timestamp when = (Timestamp)(rs.getObject("datetime"));
-		        PGpoint p = (PGpoint)(rs.getObject("location"));
-		        System.out.println(" result: " + id + "  " + when + p);
-		    }
-		    System.out.println();
-		    System.out.println();
-		    
-		    // Table Dispatch
-		    System.out.println("Dispatch result: ");
-		    queryString = "select * from Dispatch";
-		    ps = connection.prepareStatement(queryString);
-		    rs = ps.executeQuery();
-		    while (rs.next()){
-		    	int request = rs.getInt("request_id");
-		    	int driver = rs.getInt("driver_id");
-		    	PGpoint p_car = (PGpoint)(rs.getObject("car_location"));
-		    	Timestamp when = (Timestamp)(rs.getObject("datetime"));
-		    	System.out.println("result: request_id:" + request + "driverID: " + driver + " " + p_car + when);
-		    }
-		    System.out.println();
-		    System.out.println();
-		    
-		    // Table Request
-		    System.out.println("Request result: ");
-		    queryString = "select * from Request";
-		    ps = connection.prepareStatement(queryString);
-		    rs = ps.executeQuery();
-		    while (rs.next()){
-		    	int request = rs.getInt("request_id");
-		    	int client = rs.getInt("client_id");
-		    	Timestamp when = (Timestamp)(rs.getObject("datetime"));
-		    	System.out.println(" result: request_id:" + request + "clientID: " + client + " " + when);
-		    }
-		    System.out.println();
-		    System.out.println();
-		    
-		    // Table pickUP
-		    System.out.println("picked up result: ");
-		    queryString = "select * from Pickup";
-		    ps = connection.prepareStatement(queryString);
-		    rs = ps.executeQuery();
-		    while (rs.next()){
-		    	int request = rs.getInt("request_id");
-		    	Timestamp when = (Timestamp)(rs.getObject("datetime"));
-		    	System.out.println(" result: " + request + "  " + when);
-		    }
-		    System.out.println();
-		    System.out.println();
-	   } catch(SQLException se){
-	   		System.err.println("SQL Exception." +
-                        "<Message>: " + se.getMessage());
-	   }
    }
    
    /* ===================== Dispatcher-related methods ===================== */
@@ -234,152 +160,92 @@ public class Assignment2 {
     */
    public void dispatch(PGpoint NW, PGpoint SE, Timestamp when) {
       // Implement this method!
-      try {
-			PreparedStatement dropView1 = connection.prepareStatement("DROP VIEW " 
-			+ "IF EXISTS allBills cascade");
-			PreparedStatement dropView2 = connection.prepareStatement("DROP VIEW " 
-			+ "IF EXISTS ordered cascade");
-			PreparedStatement dropView3 = connection.prepareStatement("DROP VIEW " 
-			+ "IF EXISTS latestAvail cascade");
-			PreparedStatement dropView4 = connection.prepareStatement("DROP VIEW " 
-			+ "IF EXISTS availTime cascade");
-			dropView1.execute();
-			dropView2.execute();
-			dropView3.execute();
-			dropView4.execute();
-		} catch (SQLException se) {
-			System.err.println("SQL Exception when dropping views." +
-		                "<Message>: " + se.getMessage());
-		}
-      try {
-			PreparedStatement getBills = connection.prepareStatement("create view allBills as " 
-			+ "select Request.client_id, sum(Billed.amount) as amount " 
-			+ "from Request join Billed on Request.request_id = Billed.request_id "
-			+ "group by Request.client_id");
-			getBills.execute();
-		} catch (SQLException se) {
-			System.err.println("SQL Exception when getting all bills." +
-                        "<Message>: " + se.getMessage());
-		}
-		
-		try {
-			PreparedStatement getOrder = connection.prepareStatement("create view ordered as " 
-			+ "select request_id, Request.client_id, datetime, location as source, amount " 
-			+ "from Request join allBills on Request.client_id = allBills.client_id "
-			+ "join Place on source = name "
-			+ "order by amount DESC");
-			getOrder.execute();
-		} catch (SQLException se) {
-			System.err.println("SQL Exception when getting ordered clients." +
-                        "<Message>: " + se.getMessage());
-		}
-		
-		try {
-			PreparedStatement availTime = connection.prepareStatement("create view availTime as "
-			+ "select driver_id, max(datetime) as datetime from Available group by "
-			+ "driver_id");
-			availTime.execute();
-		} catch (SQLException se){
-			System.err.println("SQL Exception when getting available time." +
-	                    "<Message>: " + se.getMessage());
-		}
-		
-		try {
-			PreparedStatement getLatestAvail = connection.prepareStatement("create view latestAvail as "
-			+ "select Available.driver_id, Available.datetime, location "
-			+ "from Available join availTime "
-			+ "on Available.driver_id = availTime.driver_id and Available.datetime = availTime.datetime");
-			getLatestAvail.execute();
-		} catch (SQLException se){
-			System.err.println("SQL Exception when getting latest available time." +
-	                    "<Message>: " + se.getMessage());
-		}
-		
-		try {
-			PreparedStatement getClients = connection.prepareStatement("select request_id, "
-			+ "client_id, datetime, source from ordered "
-			+ "where source[0] >= ? and source[0] <= ? and source[1] >= ? and source[1] <= ? "
-			+ "and not exists (select request_id from Dispatch "
-			+ "where Dispatch.request_id = ordered.request_id)");
-			getClients.setDouble(1, NW.x);
-			getClients.setDouble(2, SE.x);
-			getClients.setDouble(3, SE.y);
-			getClients.setDouble(4, NW.y);
-			ResultSet rs = getClients.executeQuery();
-			while(rs.next()){
-				try {
-					
-					PreparedStatement dropView5 = connection.prepareStatement("DROP VIEW " 
-					+ "IF EXISTS goodDrivers cascade");
-					dropView5.execute();
-				} catch (SQLException se) {
-					System.err.println("SQL Exception when dropping views." +
-					            "<Message>: " + se.getMessage());
-				}
-				
-				try {
-					PreparedStatement getDrivers = connection.prepareStatement("create view goodDrivers as "
-					+ "select latestAvail.driver_id, latestAvail.location " 
-					+ "from latestAvail "
-					+ "where not exists (select latestAvail.driver_id, latestAvail.datetime "
-					+ "from latestAvail join Dispatch on latestAvail.driver_id = Dispatch.driver_id "
-					+ "where Dispatch.datetime > latestAvail.datetime)");
-					getDrivers.execute();
-				} catch (SQLException se){
-					System.err.println("SQL Exception when getting latest available time." +
-					            "<Message>: " + se.getMessage());
-				}
-				
-				try {
-					PreparedStatement bestDriver = connection.prepareStatement("select driver_id, location, " 
-					+ "? <@> location as distance " 
-					+ "from goodDrivers "
-					+ "where location[0] >= ? and location[0] <= ? and location[1] >= ? and location[1] <= ? "
-					+ "order by distance limit 1");
-					bestDriver.setObject(1, (PGpoint) rs.getObject("source"));
-					bestDriver.setDouble(2, NW.x);
-					bestDriver.setDouble(3, SE.x);
-					bestDriver.setDouble(4, SE.y);
-					bestDriver.setDouble(5, NW.y);
-					ResultSet toDispatch = bestDriver.executeQuery();
-					if (toDispatch.next()){
-						int request_id = rs.getInt("request_id");
-						int driver_id = toDispatch.getInt("driver_Id");
-						PGpoint car_location = (PGpoint) toDispatch.getObject("location");
-						try {
-							PreparedStatement insert = connection.prepareStatement("insert into Dispatch values"
-							+ "(?, ?, ?, ?)");
-							insert.setInt(1, request_id);
-							insert.setInt(2, driver_id);
-							insert.setObject(3, car_location);
-							insert.setTimestamp(4, when);
-							insert.execute();
-						} catch (SQLException se){
-							System.err.println("SQL Exception when inserting to dispatch" +
-										"<Message>: " + se.getMessage());
-						}
-					} else {break;}
-				} catch (SQLException se){
-					System.err.println("SQL Exception when getting best driver." +
-					            "<Message>: " + se.getMessage());
-				}
-				
-				//try {
-				//	PreparedStatement bestToDispatch = connection.prepareStatement("select pairUp.client_id, pairUp.driver_id, "
-				//	+ "goodDrivers.location as car_location, ? as datetime " 
-				//	+ "from pairUp join goodDrivers on goodDrivers.driver_id = pairUp.driver_id "
-				//	+ "where exists (select client_id, min(distance) from pairUp group by client_id)");
-				//	bestToDispatch.setTimestamp(1, when);
-				//	ResultSet dispatches = bestToDispatch.executeQuery();
-				//} catch (SQLException se){
-				//	System.err.println("SQL Exception when dispatching." +
-				//                "<Message>: " + se.getMessage());
-				//}
-			}
-		} catch (SQLException se) {
-			System.err.println("SQL Exception when getting clients." +
-                        "<Message>: " + se.getMessage());
-		}
+       // drop views if exist
+        PreparedStatement dropView1 = connection.prepareStatement("DROP VIEW "
+        + "IF EXISTS allBills cascade");
+        PreparedStatement dropView2 = connection.prepareStatement("DROP VIEW "
+        + "IF EXISTS ordered cascade");
+        PreparedStatement dropView3 = connection.prepareStatement("DROP VIEW "
+        + "IF EXISTS latestAvail cascade");
+        PreparedStatement dropView4 = connection.prepareStatement("DROP VIEW "
+        + "IF EXISTS availTime cascade");
+        dropView1.execute();
+        dropView2.execute();
+        dropView3.execute();
+        dropView4.execute();
+
+        PreparedStatement getBills = connection.prepareStatement("create view allBills as "
+        + "select Request.client_id, sum(Billed.amount) as amount "
+        + "from Request join Billed on Request.request_id = Billed.request_id "
+        + "group by Request.client_id");
+        getBills.execute();
+
+        PreparedStatement getOrder = connection.prepareStatement("create view ordered as "
+        + "select request_id, Request.client_id, datetime, location as source, amount "
+        + "from Request join allBills on Request.client_id = allBills.client_id "
+        + "join Place on source = name "
+        + "order by amount DESC");
+        getOrder.execute();
+
+        PreparedStatement availTime = connection.prepareStatement("create view availTime as "
+        + "select driver_id, max(datetime) as datetime from Available group by "
+        + "driver_id");
+        availTime.execute();
+
+        PreparedStatement getLatestAvail = connection.prepareStatement("create view latestAvail as "
+        + "select Available.driver_id, Available.datetime, location "
+        + "from Available join availTime "
+        + "on Available.driver_id = availTime.driver_id and Available.datetime = availTime.datetime");
+        getLatestAvail.execute();
+
+        PreparedStatement getClients = connection.prepareStatement("select request_id, "
+        + "client_id, datetime, source from ordered "
+        + "where source[0] >= ? and source[0] <= ? and source[1] >= ? and source[1] <= ? "
+        + "and not exists (select request_id from Dispatch "
+        + "where Dispatch.request_id = ordered.request_id)");
+        getClients.setDouble(1, NW.x);
+        getClients.setDouble(2, SE.x);
+        getClients.setDouble(3, SE.y);
+        getClients.setDouble(4, NW.y);
+        ResultSet rs = getClients.executeQuery();
+        while(rs.next()){
+                PreparedStatement dropView5 = connection.prepareStatement("DROP VIEW "
+                + "IF EXISTS goodDrivers cascade");
+                dropView5.execute();
+
+                PreparedStatement getDrivers = connection.prepareStatement("create view goodDrivers as "
+                + "select latestAvail.driver_id, latestAvail.location "
+                + "from latestAvail "
+                + "where not exists (select latestAvail.driver_id, latestAvail.datetime "
+                + "from latestAvail join Dispatch on latestAvail.driver_id = Dispatch.driver_id "
+                + "where Dispatch.datetime > latestAvail.datetime)");
+                getDrivers.execute();
+
+                PreparedStatement bestDriver = connection.prepareStatement("select driver_id, location, "
+                + "? <@> location as distance "
+                + "from goodDrivers "
+                + "where location[0] >= ? and location[0] <= ? and location[1] >= ? and location[1] <= ? "
+                + "order by distance limit 1");
+                bestDriver.setObject(1, (PGpoint) rs.getObject("source"));
+                bestDriver.setDouble(2, NW.x);
+                bestDriver.setDouble(3, SE.x);
+                bestDriver.setDouble(4, SE.y);
+                bestDriver.setDouble(5, NW.y);
+                ResultSet toDispatch = bestDriver.executeQuery();
+                if (toDispatch.next()){
+                    int request_id = rs.getInt("request_id");
+                    int driver_id = toDispatch.getInt("driver_Id");
+                    PGpoint car_location = (PGpoint) toDispatch.getObject("location");
+
+                    PreparedStatement insert = connection.prepareStatement("insert into Dispatch values"
+                    + "(?, ?, ?, ?)");
+                    insert.setInt(1, request_id);
+                    insert.setInt(2, driver_id);
+                    insert.setObject(3, car_location);
+                    insert.setTimestamp(4, when);
+                    insert.execute();
+                } else {break;}
+        }
 		
    }
 
@@ -390,20 +256,16 @@ public class Assignment2 {
 		  String url = "jdbc:postgresql://localhost:5432/csc343h-chengj60";
 		  String user = "chengj60";
 		  System.out.println("connection succeed: " + a2.connectDB(url, user, ""));
-		  a2.printResult();
 		  Timestamp t = new Timestamp(System.currentTimeMillis());;
 		  PGpoint p1 = new PGpoint(0, 100);
 		  System.out.println("x: " + p1.x + "y: " + p1.y);
 		  System.out.println("available pass: " + a2.available(12345, t, p1));
 		  System.out.println("pickup pass: " + a2.picked_up(12345, 1, t));
-		  a2.printResult();
 		  PGpoint p2 = new PGpoint(100, 0);
 		  System.out.println("dispatch pass: ?");
 		  a2.dispatch(p1, p2, t);
-		  a2.printResult();
 		  a2.disconnectDB();
 		  System.out.println("Now the connection is closed, the following result should raise error!");
-		  a2.printResult();
 	  } catch (Exception e){
 	  	System.out.println("Boo!");
 	  }
