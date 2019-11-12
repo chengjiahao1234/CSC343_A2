@@ -40,7 +40,7 @@ select Client.client_id as client_id, month,
 from Client, allBill;
 
 CREATE VIEW answer AS
-select client_id, allClientBill.month, total, 
+select client_id, allClientBill.month as months, total, 
     case when total >= average then 'at or above'
         else 'below'
     end as comparison
@@ -50,4 +50,4 @@ from allClientBill join averageAmount
 -- Your query that answers the question goes below the "insert into" line:
 insert into q5
 (select * from answer
-order by client_id, month);
+order by client_id, months);

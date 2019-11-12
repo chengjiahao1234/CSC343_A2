@@ -7,7 +7,7 @@ drop table if exists q8 cascade;
 create table q8(
     client_id INTEGER,
     reciprocals INTEGER,
-    difference real
+    difference float
 );
 
 -- Do this for each of the views that define your intermediate steps.  

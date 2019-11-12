@@ -6,7 +6,7 @@ drop table if exists q6 cascade;
 
 create table q6(
     client_id INTEGER,
-    year text,
+    year char(4),
     rides INTEGER
 );
 
@@ -14,6 +14,7 @@ create table q6(
 -- (But give them better names!) The IF EXISTS avoids generating an error 
 -- the first time this file is imported.
 DROP VIEW IF EXISTS yearsWithRides CASCADE;
+DROP VIEW IF EXISTS clientsToYears;
 DROP VIEW IF EXISTS Rides CASCADE;
 DROP VIEW IF EXISTS top1 CASCADE;
 DROP VIEW IF EXISTS withoutTop1 CASCADE;
@@ -32,11 +33,18 @@ create view yearsWithRides as
 	select distinct to_char(Request.datetime, 'YYYY') as year
 	from Request join Dropoff on Request.request_id = Dropoff.request_id;
 
+create view clientsToYears as
+	select Client.client_id, year
+	from Client, yearsWithRides;
+
 create view Rides as
-	select Request.client_id, year, count(Request.request_id) as rides
+	select clientsToYears.client_id, year, count(Request.request_id) as rides
 	from Request join Dropoff on Request.request_id = Dropoff.request_id
-		join yearsWithRides on year = to_char(Request.datetime, 'YYYY')
-	group by Request.client_id, year;
+		right join clientsToYears 
+			on Request.client_id = clientsToYears.client_id
+			and year = to_char(Request.datetime, 'YYYY')
+		--right join Client on Client.client_id = Request.client_id
+	group by clientsToYears.client_id, year;
 
 create view top1 as
 	select * from Rides

@@ -6,9 +6,9 @@ drop table if exists q4 cascade;
 
 create table q4(
     type varchar(10),
-    number INTEGER default 0,
-    early real default NULL,
-    late real default NULL
+    number INTEGER,
+    early float,
+    late float
 );
 
 -- Do this for each of the views that define your intermediate steps.  

@@ -7,8 +7,8 @@ drop table if exists q2 cascade;
 create table q2(
     client_id INTEGER,
     name varchar(41),
-    email VARCHAR(30) default 'unknown',
-    billed real,
+    email VARCHAR(30),
+    billed float,
     decline INTEGER
 );
 
@@ -21,8 +21,8 @@ DROP VIEW IF EXISTS In2015 CASCADE;
 DROP VIEW IF EXISTS FewerThan2014 CASCADE;
 -- Define views for your intermediate steps here:
 create view moreThan500Before as 
-	select Client.client_id, concat(firstname, ' ', surname) as name, 
-		email, sum(amount) as billed
+	select Client.client_id, concat(firstname, ' ', surname) as name, email, 
+		sum(amount) as billed
 	from Client 
 		join Request on Client.client_id = Request.client_id 
 		join Billed on Request.request_id = Billed.request_id
@@ -55,6 +55,7 @@ create view FewerThan2014 as
 
 -- Your query that answers the question goes below the "insert into" line:
 insert into q2
-	(select moreThan500Before.client_id, name, email, billed, decline
+	(select moreThan500Before.client_id, name, 
+		case when email is null then 'unknown' else email end, billed, decline
 		from moreThan500Before join FewerThan2014 
 			on moreThan500Before.client_id = FewerThan2014.client_id);
