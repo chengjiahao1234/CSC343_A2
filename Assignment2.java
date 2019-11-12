@@ -129,6 +129,74 @@ public class Assignment2 {
         }
         return true;
     }
+
+	public void printResult(){
+	   try{
+	       String queryString = "select * from available";
+          PreparedStatement ps = connection.prepareStatement(queryString);
+
+		    ResultSet rs = ps.executeQuery();
+
+		    // Table available
+		    System.out.println("available table:");
+		    System.out.println();
+		    while (rs.next()) {
+		        int id = rs.getInt("driver_id");
+		        Timestamp when = (Timestamp)(rs.getObject("datetime"));
+		        PGpoint p = (PGpoint)(rs.getObject("location"));
+		        System.out.println(" result: " + id + "  " + when + p);
+		    }
+		    System.out.println();
+		    System.out.println();
+		    
+		    // Table Dispatch
+		    System.out.println("Dispatch result: ");
+		    queryString = "select * from Dispatch";
+		    ps = connection.prepareStatement(queryString);
+		    rs = ps.executeQuery();
+		    while (rs.next()){
+		    	int request = rs.getInt("request_id");
+		    	int driver = rs.getInt("driver_id");
+		    	PGpoint p_car = (PGpoint)(rs.getObject("car_location"));
+		    	Timestamp when = (Timestamp)(rs.getObject("datetime"));
+		    	System.out.println("result: request_id:" + request + "driverID: " + driver + " " + p_car + when);
+		    }
+		    System.out.println();
+		    System.out.println();
+		    
+		    // Table Request
+		    System.out.println("Request result: ");
+		    queryString = "select * from Request";
+		    ps = connection.prepareStatement(queryString);
+		    rs = ps.executeQuery();
+		    while (rs.next()){
+		    	int request = rs.getInt("request_id");
+		    	int client = rs.getInt("client_id");
+		    	Timestamp when = (Timestamp)(rs.getObject("datetime"));
+		    	System.out.println(" result: request_id:" + request + "clientID: " + client + " " + when);
+		    }
+		    System.out.println();
+		    System.out.println();
+		    
+		    // Table pickUP
+		    System.out.println("picked up result: ");
+		    queryString = "select * from Pickup";
+		    ps = connection.prepareStatement(queryString);
+		    rs = ps.executeQuery();
+		    while (rs.next()){
+		    	int request = rs.getInt("request_id");
+		    	Timestamp when = (Timestamp)(rs.getObject("datetime"));
+		    	System.out.println(" result: " + request + "  " + when);
+		    }
+		    System.out.println();
+		    System.out.println();
+	   } catch(SQLException se){
+	   		System.err.println("SQL Exception." +
+                        "<Message>: " + se.getMessage());
+	   }
+   }
+
+
     /* ===================== Dispatcher-related methods ==================== */
 
     /**
@@ -334,22 +402,22 @@ public class Assignment2 {
             String user = "chengj60";
             System.out.println("connection succeed: "
                     + a2.connectDB(url, user, ""));
-            //a2.printResult();
+            a2.printResult();
             Timestamp t = new Timestamp(System.currentTimeMillis());;
             PGpoint p1 = new PGpoint(0, 100);
             System.out.println("x: " + p1.x + "y: " + p1.y);
             System.out.println("available pass: "
                     + a2.available(12345, t, p1));
             System.out.println("pickup pass: " + a2.picked_up(12345, 1, t));
-            //a2.printResult();
+            a2.printResult();
             PGpoint p2 = new PGpoint(100, 0);
             System.out.println("dispatch pass: ?");
             a2.dispatch(p1, p2, t);
-            //a2.printResult();
+            a2.printResult();
             a2.disconnectDB();
-            //System.out.println("Now the connection is closed, " +
-            //        "the following result should raise error!");
-            //a2.printResult();
+            System.out.println("Now the connection is closed, " +
+                    "the following result should raise error!");
+            a2.printResult();
         } catch (Exception e){
             System.out.println("Boo!");
         }
