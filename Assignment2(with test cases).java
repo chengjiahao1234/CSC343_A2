@@ -104,6 +104,7 @@ public class Assignment2 {
     */
    public boolean picked_up(int driverID, int clientID, Timestamp when) {
       // Implement this method!
+	   boolean find = false;
       try {
 		  PreparedStatement execPick;
 		  ResultSet rs;
@@ -119,7 +120,8 @@ public class Assignment2 {
 		  	int request = rs.getInt("request_id");
 		  	int driver = rs.getInt("driver_id");
 		  	int client = rs.getInt("client_id");
-		  	if(driverID == driver){
+		  	if(driverID == driver && client = clientID){
+		  		find = true;
 		  		execPick = connection.prepareStatement("INSERT INTO Pickup VALUES (?, ?)");
 		  		execPick.setInt(1, request);
 		  		execPick.setTimestamp(2, when);
@@ -131,7 +133,7 @@ public class Assignment2 {
                         "<Message>: " + se.getMessage());
       	return false;
       }
-      return true; 
+      return find;
    }
    
    public void printResult(){

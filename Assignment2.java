@@ -1,4 +1,4 @@
-import java.sql.*;
+  import java.sql.*;
 // You should use this class so that you can represent SQL points as
 // Java PGpoint objects.
 import org.postgresql.geometric.PGpoint;
@@ -100,6 +100,7 @@ public class Assignment2 {
      */
     public boolean picked_up(int driverID, int clientID, Timestamp when) {
         // Implement this method!
+        boolean find = false;
         try {
             PreparedStatement execPick;
             ResultSet rs;
@@ -116,7 +117,8 @@ public class Assignment2 {
                 int request = rs.getInt("request_id");
                 int driver = rs.getInt("driver_id");
                 int client = rs.getInt("client_id");
-                if(driverID == driver){
+                if(driverID == driver && client == clientID){
+                    find = true;
                     execPick = connection.prepareStatement("INSERT "
                             + "INTO Pickup VALUES (?, ?)");
                     execPick.setInt(1, request);
@@ -127,7 +129,7 @@ public class Assignment2 {
         } catch(SQLException se){
             return false;
         }
-        return true;
+        return find;
     }
     /* ===================== Dispatcher-related methods ==================== */
 
