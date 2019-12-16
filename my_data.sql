@@ -2,13 +2,13 @@ insert into client values
 (99, 'Mason', 'Daisy', 'daisy@kitchen.com'),
 (100, 'Crawley', 'Violet', 'dowager@dower-house.org'),
 (88, 'Branson', 'Tom', 'branson@gmail.com'),
-(1, 'Jiahao', 'Cheng', null);
+(1, 'James', 'Leborn', null);
 
 
 insert into driver values
 (12345, 'Snow', 'Jon', 'January 1, 1990', 'The Wall', 'BGSW 420', false),
 (22222, 'Tyrion', 'Lannister', 'January 1, 1990', 'Kings Landing', 'ABCD 123', false),
-(11111, 'Jiahao', 'Cheng', 'January 1, 1998', 'U of T', 'TEST 000', false);
+(11111, 'James', 'Leborn', 'January 1, 1998', 'U of T', 'TEST 000', false);
 
 
 insert into available values
