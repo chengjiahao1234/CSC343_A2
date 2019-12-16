@@ -389,8 +389,8 @@ public class Assignment2 {
       // You can put testing code in here. It will not affect our autotester.
       try{
 		  Assignment2 a2 = new Assignment2();
-		  String url = "jdbc:postgresql://localhost:5432/csc343h-chengj60";
-		  String user = "chengj60";
+		  String url = "jdbc:postgresql://localhost:5432/csc343h-XXXXXX";
+		  String user = "XXXXXX";
 		  System.out.println("connection succeed: " + a2.connectDB(url, user, ""));
 		  a2.printResult();
 		  Timestamp t = new Timestamp(System.currentTimeMillis());;
